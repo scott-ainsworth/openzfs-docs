@@ -143,7 +143,7 @@ be deleted.
      cat << EOF
      label: dos
      unit: sectors
-     
+
      1 : start=  2048,  size=$BOOT, type=c, bootable
      2 : start=$((2048+BOOT)),  size=$ROOT, type=83
      3 : start=$((2048+BOOT+ROOT)), size=$ROOT, type=83
@@ -153,10 +153,16 @@ be deleted.
 
    Connect the SD card to a machine other than the target Raspberry Pi.  If
    any filesystems are automatically mounted (e.g. by GNOME) unmount them.
-   Determine the device name (which is almost certainly as shown below) and
-   set it in a variable::
+   Determine the device name (which is almost certainly as shown below, if an
+   SD reader is in use) and set it in a variable:
 
      DISK=/dev/mmcblk0
+
+   If a USB SD reader is used instead of a built-in SD reader, the device name
+   is likely something like ``/dev/sdb`` or ``/dev/sdc``.  If this is the case,
+   set the variable to the appropriate value, for example:
+
+     DISK=/dev/sdb
 
 #. Clear old ZFS labels::
 
@@ -191,6 +197,11 @@ be deleted.
 #. Copy the bootloader data::
 
      sudo dd if=${IMG}p1 of=${DISK}p1 bs=1M
+
+   **Hint:** if the SD card device is something like ``/dev/sdb`` (see setting
+   the DISK variable above) instead of ``/dev/mmcblk0``, remove the *p* from
+   the disk name (e.g., use ``${DISK}1`` instead of ``${DISK}p1`` in this step
+   and the steps below.
 
 #. Clear old label(s) from partition 2::
 
